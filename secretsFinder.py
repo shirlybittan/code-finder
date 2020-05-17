@@ -8,7 +8,7 @@ from github import Github
 
 
 # open access from my account in github
-ACCESS_TOKEN="45e5c4efa04bf6793230b5d7488d8e0d08bff1cb"
+ACCESS_TOKEN=open("github_token.txt", "r").read().strip()
 g = Github(ACCESS_TOKEN)
 
 
