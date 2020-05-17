@@ -7,8 +7,6 @@ import mimetypes #check if the file has text in it
 from github import Github
 
 
-#added: verification of the type before the search + clear print
-
 # open access from my account in github
 ACCESS_TOKEN="45e5c4efa04bf6793230b5d7488d8e0d08bff1cb"
 g = Github(ACCESS_TOKEN)
@@ -40,6 +38,7 @@ def RSA_search(result_path, fin, filename):
     print(fin)
         #checking if the file is a text file before the verification00
         #if "text" in mimetypes.guess_type(filename)[0]:
+
     #checking if presence of RSA private key
     RSA = re.findall('-----BEGIN RSA PRIVATE KEY-----\\n(([0-9a-zA-Z/+=]+\\n)+)-----END RSA PRIVATE KEY-----', fin)
     if RSA:
@@ -67,15 +66,6 @@ def AWS_search(result_path, fin, filename):
 
 
 
-    #checking if the file is a text before the verification
-    #if "text/plain" in mimetypes.guess_type(filename)[0]:    
-        #only alpha-numeric, / and +. max of 40 characters. dismatch if more than 4 same char in a row. more than 10 same char in a row is excluded
-
-            #printing the found key in text file--------------------------------------------------------
-
-
-
-
 def main():
 
       
@@ -85,8 +75,8 @@ def main():
     open(os.path.join(result_path,'Results.txt'),'w').close()
 
     #cloning from github to local
-   # all_repos=search_github("python")
-   # gitClone (all_repos, git_repository)
+    all_repos=search_github("python")
+    gitClone (all_repos, git_repository)
 
     for path, dirs, files in os.walk( git_repository):
     
@@ -99,6 +89,7 @@ def main():
                 AWS_search(result_path, fin, filename)
                 RSA_search(result_path, fin, filename)
 
+    #removing the files dowloaded from git after verification of keys
     #shutil.rmtree(git_repository) 
 
 
