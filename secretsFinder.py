@@ -7,7 +7,7 @@ import mimetypes #check if the file has text in it
 from github import Github
 
 
-#added: verification of the type before the search + right print
+#added: verification of the type before the search + clear print
 
 # open access from my account in github
 ACCESS_TOKEN="45e5c4efa04bf6793230b5d7488d8e0d08bff1cb"
@@ -32,66 +32,63 @@ def gitClone (all_repos, git_repository):
             folder_name=git_to_clone.split('/')[-1]
             git.Repo.clone_from(git_to_clone, git_repository+ "/"+folder_name, branch='master')
 
-            #git.Repo.clone_from(git_to_clone, './test/'+folder_name, branch='master')
         except Exception as e:
             print("An exception occurred",repo.clone_url, "\n",  e )
 
 
 def RSA_search(result_path, fin, filename):
-    #checking if the file is a text file before the verification
-	if "text" in mimetypes.guess_type(filename)[0]:
-		#checking if presence of RSA private key
-		RSA = re.findall('.-----BEGIN RSA PRIVATE KEY-----\\n(([0-9a-zA-Z/+=]+\\n)+)-----END RSA PRIVATE KEY-----', fin)
-		#checking if presence of RSA private key
-		if RSA:
-			print("\nFound RSA access private key in ", filename, ": \n " )
-			#print properly the results found
-			for x in range(len(RSA)) :
-				print (RSA[x][0])
-				#printing in text file
-				with open(os.path.join(result_path,"Results.txt"), "a") as result_file:
-					result_file.write("%s %s \n %s\n" % ("\nFound RSA access private key in ", filename, "\n", RSA[x][0]))
-					
-		#return file for the unitTest; we'll compare the actual result txt with the txt we should receive
-		#return result_file -> make global so it will work?
-		#return result_file
+    print(fin)
+        #checking if the file is a text file before the verification00
+        #if "text" in mimetypes.guess_type(filename)[0]:
+    #checking if presence of RSA private key
+    RSA = re.findall('-----BEGIN RSA PRIVATE KEY-----\\n(([0-9a-zA-Z/+=]+\\n)+)-----END RSA PRIVATE KEY-----', fin)
+    if RSA:
+        print("\nFound RSA access private key in ", filename, ": \n " )
+        #print properly the results found
+        for x in range(len(RSA)) :
+            print (RSA[x][0])
+            #printing in text file
+            with open(os.path.join(result_path,"Results.txt"), "a") as result_file:
+                result_file.write(f"Found RSA access private key in {filename} \n{RSA[x][0]} \n")
+                    
 
 
 #checking if presence of AWS private key in file
 def AWS_search(result_path, fin, filename):
+    #if "text/plain" == mimetypes.guess_type(filename)[0]:    
+    pk=re.findall(r'(?:\s|^)(?!.*([0-9a-zA-Z/+])\1{10})([0-9a-zA-Z/+]{40})(?:\s|$)', fin, re.M)
+    if pk:
+        print("\n Found AWS private key in ", filename, ": \n ")
+        for x in range(len(pk)) :
+            print(pk[x][1])
+            with open(os.path.join(result_path,"Results.txt"), "a") as result_file:
+                result_file.write(f"Found AWS private key in {filename} \n {pk[x][1]} \n")
+
+
+
 
     #checking if the file is a text before the verification
-	if "text" in mimetypes.guess_type(filename)[0]:	
-		#only alpha-numeric, / and +. max of 40 characters. dismatch if more than 4 same char in a row. more than 10 same char in a row is excluded
-		pk=re.findall(r'(?:\s|^)(?!.*([0-9a-zA-Z/+])\1{10})([0-9a-zA-Z/+]{40})(?:\s|$)', fin, re.M)
-		
-		if pk:
-			print("\n Found AWS private key in ", filename, ": \n " )
-			for x in range(len(pk)) :
-				print (pk[x][1])
-				
-				printing the found key in text file--------------------------------------------------------
-				with open(os.path.join(result_path,"Results.txt"), "a") as result_file:
-					result_file.write("%s %s \n%s\n" % ("\nFound AWS private key in ", filename,  "\n", pk[x][1])) #print the tuple clearly
+    #if "text/plain" in mimetypes.guess_type(filename)[0]:    
+        #only alpha-numeric, / and +. max of 40 characters. dismatch if more than 4 same char in a row. more than 10 same char in a row is excluded
 
-		#return file for the unitTest comparaison
-		#return result_file -> make global so it will work?
+            #printing the found key in text file--------------------------------------------------------
 
 
 
 
 def main():
 
-
+      
     #reading from local
-    result_path='C:/Users/shirl/Desktop/test/results'
-    git_repository='C:/Users/shirl/Desktop/test/test_git_folders'
+    result_path='resultsFound'
+    git_repository='gitRepos'
+    open(os.path.join(result_path,'Results.txt'),'w').close()
 
     #cloning from github to local
-    all_repos=search_github("python")
-    gitClone (all_repos, git_repository)
+   # all_repos=search_github("python")
+   # gitClone (all_repos, git_repository)
 
-    for path, dirs, files in os.walk(git_repository):
+    for path, dirs, files in os.walk( git_repository):
     
         for f in files:
             filename = os.path.join(path, f)
@@ -102,6 +99,8 @@ def main():
                 AWS_search(result_path, fin, filename)
                 RSA_search(result_path, fin, filename)
 
+    #shutil.rmtree(git_repository) 
+
 
 if __name__ == "__main__":
     main()
@@ -111,6 +110,7 @@ class CloneProgress(RemoteProgress):
     def update(self, op_code, cur_count, max_count=None, message=''):
         if message:
             print(message)
+
 
 
 
