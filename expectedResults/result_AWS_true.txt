@@ -1,0 +1,6 @@
+Found AWS private key in scannedFile 
+ kWcrlUX5JEDGM/LtmEENI/aVmYvHNif5zB+d9+ct 
+Found AWS private key in scannedFile 
+ GOOD1UtnFEMI/K7MDENG/bPxRRRCYEXAMPLEKEY1 
+Found AWS private key in scannedFile 
+ GOOD1UX5JEDGM/LtmEENI/aVmYvHNif5zB+d9+ct 
