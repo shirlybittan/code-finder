@@ -13,3 +13,5 @@ test:
 `python3 testRegex.py`
 normal run:
 `python3 secretsFinder.py`
+
+The codes found will be in the file "resultsFound/Results.txt"
